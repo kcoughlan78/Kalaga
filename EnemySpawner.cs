@@ -10,9 +10,16 @@ public class EnemySpawner : MonoBehaviour {
     private float enemyXMin;
     private float enemyXMax;
     private float startForm;
+    public float spawnDelay;
 
     // Use this for initialization
     void Start () {
+        formOrganiser();
+        spawnToMax();
+    }
+
+    void formOrganiser()
+    {
         startForm = Random.Range(0, 1);
 
         if (startForm == 0)
@@ -29,14 +36,31 @@ public class EnemySpawner : MonoBehaviour {
         Vector3 rightedge = Camera.main.ViewportToWorldPoint(new Vector3(1, 0, distanceToCamera));
         enemyXMin = leftedge.x;
         enemyXMax = rightedge.x;
+    }
 
-
-        foreach ( Transform child in transform)
+    // below function spawn enemies all at once
+    void spawner(){
+        foreach (Transform child in transform)
         {
             GameObject enemy = Instantiate(enemyPrefab, child.transform.position, Quaternion.identity) as GameObject;
             enemy.transform.parent = child;
         }
-	}
+    }
+
+    //below functions spawns enemies one at a time
+    void spawnToMax()
+    {
+        spawnDelay = Random.Range(0f, 3f);
+        Transform freePos = nextFreePos();
+        if (freePos)
+        {
+            GameObject enemy = Instantiate(enemyPrefab, freePos.transform.position, Quaternion.identity) as GameObject;
+            enemy.transform.parent = freePos;
+        }
+        if (nextFreePos()) {
+            Invoke("spawnToMax", spawnDelay);
+        }
+    }
 
     public void OnDrawGizmos()
     {
@@ -47,10 +71,21 @@ public class EnemySpawner : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-        if(transform.position.x >= (enemyXMax - (width/2)))
+        enemyFormation();
+        if (AllMembersDead())
+        {
+            Debug.Log("All dead");
+            spawnToMax();
+        }
+    }
+
+    void enemyFormation()
+    {
+        if (transform.position.x >= (enemyXMax - (width / 2)))
         {
             movingRight = false;
-        }else if (transform.position.x <= (enemyXMin + (width/2)))
+        }
+        else if (transform.position.x <= (enemyXMin + (width / 2)))
         {
             movingRight = true;
         }
@@ -63,9 +98,31 @@ public class EnemySpawner : MonoBehaviour {
         {
             transform.position += Vector3.left * speed * Time.deltaTime;
         }
+    }
 
-	    
-	}
+    Transform nextFreePos()
+    {
+        foreach (Transform childPositionGameObject in transform)
+        {
+            if (childPositionGameObject.childCount == 0)
+            {
+                return childPositionGameObject;
+            }
+        }
+        return null;
+    }
+
+    bool AllMembersDead()
+    {
+        foreach(Transform childPositionGameObject in transform)
+        {
+            if (childPositionGameObject.childCount > 0)
+            {
+                return false;
+            }
+        }
+        return true;
+    }
 
     void OnTriggerEnter2D(Collider2D trigger)
     {
