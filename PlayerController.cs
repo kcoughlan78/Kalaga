@@ -2,10 +2,16 @@
 using System.Collections;
 
 public class PlayerController : MonoBehaviour {
-
-    private bool hasStarted = false;
+    public GameObject laserredPrefab;
+    private enemyFire enemyFire;
+    private GameObject fire;
     float xmin;
     float xmax;
+    public float missileSpeed = 4;
+    public float launchRate = 0.2f;
+    public float defenses = 199;
+    private float damage;
+
 
     // Use this for initialization
     void Start () {
@@ -14,13 +20,25 @@ public class PlayerController : MonoBehaviour {
         Vector3 rightLimit = Camera.main.ViewportToWorldPoint(new Vector3(1, 0, distance));
         xmin = leftLimit.x;
         xmax = rightLimit.x;
+
+        damage = 0;
+
     }
 	
 	// Update is called once per frame
 	void Update () {
         ShipControl();
         ShipAnimate();
-	}
+        if (Input.GetMouseButtonDown(0))
+        {
+            InvokeRepeating("ShipFire", 0.000001f, launchRate);
+        }
+
+        if (Input.GetMouseButtonUp(0))
+        {
+            CancelInvoke("ShipFire");
+        }
+    }
 
     void ShipAnimate()
     {
@@ -42,10 +60,37 @@ public class PlayerController : MonoBehaviour {
         float MousePosBlocks = (Input.mousePosition.x / Screen.width) * 11;
         ShipPos.x = Mathf.Clamp(MousePosBlocks, xmin, xmax);
         this.transform.position = ShipPos;
+    }
 
-        if (Input.GetMouseButtonDown(0))
+    void ShipFire()
+    {
+        
+            fire = Instantiate(laserredPrefab, transform.position, Quaternion.identity) as GameObject;
+            fire.GetComponent<Rigidbody2D>().velocity = new Vector3(0, missileSpeed, 0);
+    }
+
+    void OnTriggerEnter2D(Collider2D trigger)
+    {
+        if (trigger.tag == "Ammunition")
         {
-            hasStarted = true;
+            print("Safe");
+        }
+        else if (trigger.tag == "EnemyAmmo")
+        {
+            enemyFire enemyMissile = trigger.gameObject.GetComponent<enemyFire>();
+            damage += enemyMissile.enemylaserDamage;
+            if (enemyMissile && defenses > damage)
+            {
+                Destroy(trigger.gameObject);
+                print("Missile Destroyed");
+            }
+            else if (enemyMissile && defenses <= damage)
+            {
+                Destroy(trigger.gameObject);
+                Destroy(gameObject);
+                print("Missile Destroyed");
+            }
+
         }
     }
 }

@@ -66,4 +66,14 @@ public class EnemySpawner : MonoBehaviour {
 
 	    
 	}
+
+    void OnTriggerEnter2D(Collider2D trigger)
+    {
+        if (trigger.gameObject.tag == "Ammunition")
+        {
+            Destroy(gameObject);
+            print("Enemy Destroyed");
+        }
+
+    }
 }
