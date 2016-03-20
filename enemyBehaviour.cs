@@ -21,11 +21,17 @@ public class enemyBehaviour : MonoBehaviour {
     //udemy solution
     public float fireRate = 0.4f;
 
+    //scoring
+    private GameMgt gameMgt;
+    public int SulthraxianHit = 50;
+    public int SulthraxianKill = 100;
+
 
     // Use this for initialization
     void Start () {
 
         damage = 0;
+        gameMgt = GameObject.FindObjectOfType<GameMgt>();
     }
 	
 	// Update is called once per frame
@@ -59,11 +65,16 @@ public class enemyBehaviour : MonoBehaviour {
             {
                 Destroy(trigger.gameObject);
                 print("enemyMissile Destroyed");
+                gameMgt.Score = gameMgt.Score + SulthraxianHit;
+
+
             }
             else if (missile && shield <= damage)
             {
                 Destroy(trigger.gameObject);
                 Destroy(gameObject);
+                gameMgt.Score = gameMgt.Score + SulthraxianKill;
+                gameMgt.playerMsg.text = "Got him!";
                 print("enemyMissile Destroyed");
             }
         }

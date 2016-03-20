@@ -6,19 +6,34 @@ using UnityEngine.SceneManagement;
 public class GameMgt : MonoBehaviour {
 
     public int playerLives;
-    public Text text;
-    public Text levelText;
-    private LevelManager levelManager;
+    public int Score;
+    public Text livesText;
+    public Text scoreText;
+    public Text playerMsg;
+    //private LevelManager levelManager;
+    private PlayerController player;
+    
+
 
     // Use this for initialization
     void Start () {
         playerLives = 3;
-        levelManager = GameObject.FindObjectOfType<LevelManager>();
+        Score = 0;
+        //levelManager = GameObject.FindObjectOfType<LevelManager>();
+        player = GameObject.FindObjectOfType<PlayerController>();
     }
 	
 	// Update is called once per frame
 	void Update () {
-        text.text = "Lives: " + playerLives;
-        levelText.text = "Level: " + SceneManager.GetActiveScene().buildIndex;
+        livesText.text = "Lives: " + playerLives;
+        scoreText.text = "Score: " + Score;
+        if(player.damage > 100)
+        {
+            playerMsg.text = "Shields damaged";
+        }
+        else
+        {
+            playerMsg.text = "Enemy Alert";
+        }
 	}
 }

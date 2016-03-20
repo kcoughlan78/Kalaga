@@ -10,7 +10,13 @@ public class PlayerController : MonoBehaviour {
     public float missileSpeed = 4;
     public float launchRate = 0.2f;
     public float defenses = 199;
-    private float damage;
+    public float damage;
+
+    //scoring
+    private GameMgt gameMgt;
+    public int playerHit = 100;
+    public int playerKill = 200;
+
 
 
     // Use this for initialization
@@ -22,6 +28,8 @@ public class PlayerController : MonoBehaviour {
         xmax = rightLimit.x;
 
         damage = 0;
+
+        gameMgt = GameObject.FindObjectOfType<GameMgt>();
 
     }
 	
@@ -82,12 +90,14 @@ public class PlayerController : MonoBehaviour {
             if (enemyMissile && defenses > damage)
             {
                 Destroy(trigger.gameObject);
+                gameMgt.Score = gameMgt.Score - playerHit;
                 print("Missile Destroyed");
             }
             else if (enemyMissile && defenses <= damage)
             {
                 Destroy(trigger.gameObject);
                 Destroy(gameObject);
+                gameMgt.Score = gameMgt.Score - playerKill;
                 print("Missile Destroyed");
             }
 
