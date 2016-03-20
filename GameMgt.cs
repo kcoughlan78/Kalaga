@@ -6,20 +6,21 @@ using UnityEngine.SceneManagement;
 public class GameMgt : MonoBehaviour {
 
     public int playerLives;
-    public int Score;
+    public int Score = 0;
     public Text livesText;
     public Text scoreText;
     public Text playerMsg;
-    //private LevelManager levelManager;
+    private LevelManager levelManager;
     private PlayerController player;
-    
+    public int StartScore = 0;
+    public int StartLives = 1;
+
 
 
     // Use this for initialization
     void Start () {
-        playerLives = 3;
-        Score = 0;
-        //levelManager = GameObject.FindObjectOfType<LevelManager>();
+        playerLives = 1;
+        levelManager = GameObject.FindObjectOfType<LevelManager>();
         player = GameObject.FindObjectOfType<PlayerController>();
     }
 	
@@ -34,6 +35,11 @@ public class GameMgt : MonoBehaviour {
         else
         {
             playerMsg.text = "Enemy Alert";
+        }
+
+        if(playerLives == 0)
+        {
+            levelManager.LoadLevel("Lose");
         }
 	}
 }

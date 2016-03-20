@@ -4,6 +4,13 @@ using System.Collections;
 
 public class LevelManager : MonoBehaviour {
 
+    private GameMgt gameMgt;
+
+    void Start()
+    {
+        gameMgt = GameObject.FindObjectOfType<GameMgt>();
+    }
+
     public void LoadLevel(string name)
     {
         Debug.Log("Level load requested for: " + name);

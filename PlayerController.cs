@@ -98,6 +98,7 @@ public class PlayerController : MonoBehaviour {
                 Destroy(trigger.gameObject);
                 Destroy(gameObject);
                 gameMgt.Score = gameMgt.Score - playerKill;
+                gameMgt.playerLives--;
                 print("Missile Destroyed");
             }
 
