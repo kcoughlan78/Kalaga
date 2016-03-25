@@ -3,6 +3,9 @@ using System.Collections;
 
 public class PlayerController : MonoBehaviour {
     public GameObject laserredPrefab;
+    private AudioSource audioplay;
+    public AudioClip audioplayBoom;
+    public AudioClip enemyHit;
     private enemyFire enemyFire;
     private GameObject fire;
     float xmin;
@@ -30,6 +33,7 @@ public class PlayerController : MonoBehaviour {
         damage = 0;
 
         gameMgt = GameObject.FindObjectOfType<GameMgt>();
+        audioplay = GetComponent<AudioSource>();
 
     }
 	
@@ -75,6 +79,7 @@ public class PlayerController : MonoBehaviour {
         
             fire = Instantiate(laserredPrefab, transform.position, Quaternion.identity) as GameObject;
             fire.GetComponent<Rigidbody2D>().velocity = new Vector3(0, missileSpeed, 0);
+            audioplay.Play();
     }
 
     void OnTriggerEnter2D(Collider2D trigger)
@@ -91,15 +96,18 @@ public class PlayerController : MonoBehaviour {
             {
                 Destroy(trigger.gameObject);
                 gameMgt.Score = gameMgt.Score - playerHit;
+                AudioSource.PlayClipAtPoint(enemyHit, transform.position);
                 print("Missile Destroyed");
             }
             else if (enemyMissile && defenses <= damage)
             {
                 Destroy(trigger.gameObject);
                 Destroy(gameObject);
+                AudioSource.PlayClipAtPoint(audioplayBoom, transform.position);
                 gameMgt.Score = gameMgt.Score - playerKill;
                 gameMgt.playerLives--;
                 print("Missile Destroyed");
+                
             }
 
         }
