@@ -4,7 +4,8 @@ using System.Collections;
 
 public class LevelManager : MonoBehaviour {
 
-    private GameMgt gameMgt;
+    public GameMgt gameMgt;
+    public scoreKeep scoreKeep;
 
     void Start()
     {
@@ -27,6 +28,7 @@ public class LevelManager : MonoBehaviour {
     {
         Debug.Log("Level load requested for: " + name);
         SceneManager.LoadScene(name);
+        scoreKeep.StartScore = 0;
     }
 
     public void LoadNextLevel()

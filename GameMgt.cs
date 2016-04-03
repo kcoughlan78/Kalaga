@@ -12,8 +12,9 @@ public class GameMgt : MonoBehaviour {
     public Text playerMsg;
     private LevelManager levelManager;
     private PlayerController player;
-    public int StartScore = 0;
+    public static int StartScore = 0;
     public int StartLives = 1;
+    public scoreKeep scorekeep;
 
 
 
@@ -25,7 +26,8 @@ public class GameMgt : MonoBehaviour {
     }
 	
 	// Update is called once per frame
-	void Update () {
+	void Update ()
+    {
         livesText.text = "Lives: " + playerLives;
         scoreText.text = "Score: " + Score;
         if(player.damage > 100)
@@ -40,6 +42,8 @@ public class GameMgt : MonoBehaviour {
         if(playerLives == 0)
         {
             levelManager.LoadLevel("Lose");
+            scoreKeep.StartScore = Score;
+
         }
-	}
+    }
 }
